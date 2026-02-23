@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NutriSense — Sign In</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ---- LEFT PANEL ---- */
+    .left-panel {
+      flex: 1;
+      background: var(--forest);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2.5rem 3rem;
+      overflow: hidden;
+    }
+
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(90, 138, 110, 0.25) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 80%, rgba(212, 168, 67, 0.1) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .left-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image: repeating-linear-gradient(45deg, var(--mint) 0, var(--mint) 1px, transparent 0, transparent 50%);
+      background-size: 30px 30px;
+    }
+
+    .left-logo {
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--cream);
+      position: relative;
+      z-index: 1;
+    }
+
+    .left-logo span {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .left-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .left-headline {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+
+    .left-headline em {
+      color: var(--gold);
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .left-desc {
+      color: rgba(247, 242, 232, 0.6);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      max-width: 360px;
+      margin-bottom: 2rem;
+    }
+
+    .left-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: rgba(247, 242, 232, 0.7);
+      font-size: 0.85rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .left-feature-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--gold);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .left-footer {
+      position: relative;
+      z-index: 1;
+      font-size: 0.72rem;
+      color: rgba(247, 242, 232, 0.3);
+    }
+
+    /* ---- RIGHT PANEL ---- */
+    .right-panel {
+      width: 460px;
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3rem 3rem;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    .form-container {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---- TABS ---- */
+    .tabs {
+      display: flex;
+      background: rgba(90, 138, 110, 0.08);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.6rem;
+      border: none;
+      background: transparent;
+      border-radius: 9px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--forest);
+      color: var(--cream);
+      font-weight: 500;
+    }
+
+    .form-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--forest);
+      margin-bottom: 0.3rem;
+    }
+
+    .form-subtitle {
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-bottom: 1.8rem;
+    }
+
+    /* ---- EYE TOGGLE ---- */
+    .input-wrap {
+      position: relative;
+    }
+
+    .eye-btn {
+      position: absolute;
+      right: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+      z-index: 2;
+    }
+
+    .eye-btn:hover {
+      color: var(--forest);
+    }
+
+    /* Give password inputs padding-right so text doesn't overlap eye */
+    .input-wrap input[type="password"],
+    .input-wrap input[type="text"].pw-field {
+      padding-right: 2.8rem;
+    }
+
+    /* ---- PASSWORD STRENGTH ---- */
+    .pw-strength-wrap {
+      margin-top: 0.5rem;
+      display: none;
+      /* shown via JS when register tab is active */
+    }
+
+    .pw-strength-wrap.visible {
+      display: block;
+    }
+
+    .strength-bars {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 0.35rem;
+    }
+
+    .strength-bar {
+      flex: 1;
+      height: 4px;
+      border-radius: 100px;
+      background: rgba(90, 138, 110, 0.12);
+      transition: background 0.3s;
+    }
+
+    .strength-bar.active-1 {
+      background: #E8691A;
+    }
+
+    /* weak */
+    .strength-bar.active-2 {
+      background: #D4A843;
+    }
+
+    /* fair */
+    .strength-bar.active-3 {
+      background: #5BA4CF;
+    }
+
+    /* good */
+    .strength-bar.active-4 {
+      background: var(--sage);
+    }
+
+    /* strong */
+
+    .strength-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .strength-text {
+      font-weight: 500;
+    }
+
+    .strength-text.weak {
+      color: #E8691A;
+    }
+
+    .strength-text.fair {
+      color: #D4A843;
+    }
+
+    .strength-text.good {
+      color: #5BA4CF;
+    }
+
+    .strength-text.strong {
+      color: var(--sage);
+    }
+
+    /* ---- PASSWORD REQUIREMENTS ---- */
+    .pw-requirements {
+      margin-top: 0.6rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .pw-requirements.visible {
+      display: flex;
+    }
+
+    .req-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .req-item.met {
+      color: var(--sage);
+    }
+
+    .req-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1.5px solid currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.55rem;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .req-item.met .req-icon {
+      background: var(--sage);
+      border-color: var(--sage);
+      color: white;
+    }
+
+    /* select arrow fix */
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      font-size: 0.8rem;
+    }
+
+    .select-wrap select {
+      padding-right: 2rem;
+      cursor: pointer;
+    }
+
+    #register-form {
+      display: none;
+    }
+
+    @media (max-width: 800px) {
+      .left-panel {
+        display: none;
+      }
+
+      .right-panel {
+        width: 100%;
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LEFT -->
+  <div class="left-panel">
+    <div class="left-pattern"></div>
+    <div class="left-logo">Nutri<span>Sense</span></div>
+    <div class="left-content">
+      <h2 class="left-headline">Eat smarter,<br />live <em>better</em></h2>
+      <p class="left-desc">Track your nutrition, analyze every meal, and get real-time health insights — all in one
+        place.</p>
+      <div class="left-feature">
+        <div class="left-feature-dot"></div>Instant nutrition data for 800K+ foods
+      </div>
+      <div class="left-feature">
+        <div class="left-feature-dot"></div>Personalised NutriScore per food
+      </div>
+      <div class="left-feature">
+        <div class="left-feature-dot"></div>Daily calorie & macro tracking
+      </div>
+      <div class="left-feature">
+        <div class="left-feature-dot"></div>Water tracker & BMI calculator
+      </div>
+    </div>
+    <div class="left-footer">© 2025 NutriSense · Good Health & Well-being</div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-panel">
+    <div class="form-container">
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('login')">Sign In</button>
+        <button class="tab-btn" onclick="showTab('register')">Register</button>
+      </div>
+
+      <!-- ===== LOGIN ===== -->
+      <div id="login-form">
+        <div class="form-title">Welcome back</div>
+        <div class="form-subtitle">Sign in to your NutriSense account</div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="icon">✉</span>
+            <input type="email" id="l-email" placeholder="you@example.com" />
+          </div>
+          <div class="error-msg" id="l-email-err">Please enter a valid email</div>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="icon">🔒</span>
+            <input type="password" id="l-pass" class="pw-field" placeholder="Your password" />
+            <button type="button" class="eye-btn" onclick="toggleEye('l-pass', this)" title="Show/hide password">
+              <span>👁</span>
+            </button>
+          </div>
+          <div class="error-msg" id="l-pass-err">Password is required</div>
+        </div>
+
+        <button class="btn-primary anim" id="login-btn" onclick="handleLogin()">Sign In →</button>
+
+        <p style="font-size:0.78rem;color:var(--muted);text-align:center;margin-top:1.2rem">
+          Don't have an account? <span style="color:var(--sage);cursor:pointer" onclick="showTab('register')">Register
+            here</span>
+        </p>
+      </div>
+
+      <!-- ===== REGISTER ===== -->
+      <div id="register-form">
+        <div class="form-title">Create account</div>
+        <div class="form-subtitle">Start your health journey today — it's free</div>
+
+        <div class="form-group">
+          <label>Name or Nickname</label>
+          <div class="input-wrap">
+            <span class="icon">👤</span>
+            <input type="text" id="r-name" placeholder="e.g. Alex or Alexa" />
+          </div>
+          <div class="error-msg" id="r-name-err">Please enter your name</div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="icon">✉</span>
+            <input type="email" id="r-email" placeholder="you@example.com" />
+          </div>
+          <div class="error-msg" id="r-email-err">Please enter a valid email</div>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="icon">🔒</span>
+            <input type="password" id="r-pass" class="pw-field" placeholder="Create a strong password"
+              oninput="checkStrength(this.value)" />
+            <button type="button" class="eye-btn" onclick="toggleEye('r-pass', this)" title="Show/hide password">
+              <span>👁</span>
+            </button>
+          </div>
+          <div class="error-msg" id="r-pass-err">Password must meet the requirements below</div>
+
+          <!-- Strength Meter -->
+          <div class="pw-strength-wrap visible" id="pw-strength">
+            <div class="strength-bars">
+              <div class="strength-bar" id="sb1"></div>
+              <div class="strength-bar" id="sb2"></div>
+              <div class="strength-bar" id="sb3"></div>
+              <div class="strength-bar" id="sb4"></div>
+            </div>
+            <div class="strength-label">
+              <span>Password strength</span>
+              <span class="strength-text" id="strength-text">—</span>
+            </div>
+          </div>
+
+          <!-- Requirements Checklist -->
+          <div class="pw-requirements visible" id="pw-reqs">
+            <div class="req-item" id="req-len">
+              <div class="req-icon">✓</div>
+              At least 8 characters
+            </div>
+            <div class="req-item" id="req-upper">
+              <div class="req-icon">✓</div>
+              One uppercase letter (A–Z)
+            </div>
+            <div class="req-item" id="req-lower">
+              <div class="req-icon">✓</div>
+              One lowercase letter (a–z)
+            </div>
+            <div class="req-item" id="req-num">
+              <div class="req-icon">✓</div>
+              One number (0–9)
+            </div>
+            <div class="req-item" id="req-special">
+              <div class="req-icon">✓</div>
+              One special character (!@#$%^&*)
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Age</label>
+          <div class="input-wrap select-wrap">
+            <span class="icon">🎂</span>
+            <select id="r-age">
+              <option value="">Select your age range</option>
+              <option>Under 18</option>
+              <option>18 – 24</option>
+              <option>25 – 34</option>
+              <option>35 – 44</option>
+              <option>45 – 54</option>
+              <option>55 – 64</option>
+              <option>65+</option>
+            </select>
+          </div>
+          <div class="error-msg" id="r-age-err">Please select your age range</div>
+          <p style="font-size:0.72rem;color:var(--muted);margin-top:0.4rem">Or type your exact age:</p>
+          <div class="input-wrap" style="margin-top:0.4rem">
+            <span class="icon">✏️</span>
+            <input type="number" id="r-age-custom" placeholder="e.g. 22" min="10" max="100" oninput="clearDropdown()" />
+          </div>
+        </div>
+
+        <button class="btn-primary" id="register-btn" onclick="handleRegister()">Create Account →</button>
+
+        <p style="font-size:0.78rem;color:var(--muted);text-align:center;margin-top:1.2rem">
+          Already have an account? <span style="color:var(--sage);cursor:pointer" onclick="showTab('login')">Sign
+            in</span>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="api.js"></script>
+  <script>
+    // ---- TABS ----
+    function showTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach((b, i) =>
+        b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'))
+      );
+      document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+    }
+
+    function showErr(id, show) { document.getElementById(id).classList.toggle('show', show); }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function clearDropdown() {
+      if (document.getElementById('r-age-custom').value) {
+        document.getElementById('r-age').value = '';
+      }
+    }
+
+    // ---- EYE TOGGLE ----
+    function toggleEye(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      // Swap icon: open eye = visible, closed eye = hidden
+      btn.querySelector('span').textContent = isHidden ? '🙈' : '👁';
+      btn.title = isHidden ? 'Hide password' : 'Show password';
+    }
+
+    // ---- PASSWORD STRENGTH ----
+    const rules = {
+      len: { id: 'req-len', test: pw => pw.length >= 8 },
+      upper: { id: 'req-upper', test: pw => /[A-Z]/.test(pw) },
+      lower: { id: 'req-lower', test: pw => /[a-z]/.test(pw) },
+      num: { id: 'req-num', test: pw => /[0-9]/.test(pw) },
+      special: { id: 'req-special', test: pw => /[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]/.test(pw) },
+    };
+
+    function checkStrength(pw) {
+      // Evaluate each rule
+      let passed = 0;
+      Object.entries(rules).forEach(([key, rule]) => {
+        const met = rule.test(pw);
+        if (met) passed++;
+        const el = document.getElementById(rule.id);
+        el.classList.toggle('met', met);
+      });
+
+      // Determine level
+      const bars = [document.getElementById('sb1'), document.getElementById('sb2'), document.getElementById('sb3'), document.getElementById('sb4')];
+      const strengthEl = document.getElementById('strength-text');
+      const levels = [
+        { min: 0, label: '—', cls: '', bars: 0 },
+        { min: 1, label: 'Weak', cls: 'weak', bars: 1 },
+        { min: 2, label: 'Fair', cls: 'fair', bars: 2 },
+        { min: 4, label: 'Good', cls: 'good', bars: 3 },
+        { min: 5, label: 'Strong', cls: 'strong', bars: 4 },
+      ];
+
+      let level = levels[0];
+      levels.forEach(l => { if (passed >= l.min) level = l; });
+
+      // Reset bars
+      bars.forEach((b, i) => {
+        b.className = 'strength-bar';
+        if (i < level.bars) b.classList.add('active-' + level.bars);
+      });
+
+      // Update label
+      strengthEl.className = 'strength-text ' + level.cls;
+      strengthEl.textContent = pw.length === 0 ? '—' : level.label;
+    }
+
+    function isPasswordValid(pw) {
+      return Object.values(rules).every(rule => rule.test(pw));
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('l-email').value.trim();
+      const pass = document.getElementById('l-pass').value;
+      let ok = true;
+      if (!email || !/\S+@\S+\.\S+/.test(email)) { showErr('l-email-err', true); ok = false; } else showErr('l-email-err', false);
+      if (!pass) { showErr('l-pass-err', true); ok = false; } else showErr('l-pass-err', false);
+      if (!ok) return;
+
+      const btn = document.getElementById('login-btn');
+      btn.classList.add('loading');
+
+      try {
+        const data = await api.auth.login({ email, password: pass });
+        localStorage.setItem('ns_token', data.token);
+        sessionStorage.setItem('ns_user', JSON.stringify(data.user));
+        showToast('✓ Welcome back, ' + data.user.name);
+        setTimeout(() => window.location.href = 'dashboard.html', 800);
+      } catch (err) {
+        showToast('❌ ' + err.message);
+      } finally {
+        btn.classList.remove('loading');
+      }
+    }
+
+    async function handleRegister() {
+      const name = document.getElementById('r-name').value.trim();
+      const email = document.getElementById('r-email').value.trim();
+      const pass = document.getElementById('r-pass').value;
+      const ageDrop = document.getElementById('r-age').value;
+      const ageCustom = document.getElementById('r-age-custom').value;
+      const age = parseInt(ageCustom) || (ageDrop ? parseInt(ageDrop.match(/\d+/)[0]) : 0);
+
+      let ok = true;
+      if (!name) { showErr('r-name-err', true); ok = false; } else showErr('r-name-err', false);
+      if (!email || !/\S+@\S+\.\S+/.test(email)) { showErr('r-email-err', true); ok = false; } else showErr('r-email-err', false);
+
+      if (!isPasswordValid(pass)) {
+        showErr('r-pass-err', true);
+        ok = false;
+      } else {
+        showErr('r-pass-err', false);
+      }
+
+      if (!age) { showErr('r-age-err', true); ok = false; } else showErr('r-age-err', false);
+      if (!ok) return;
+
+      const btn = document.getElementById('register-btn');
+      btn.classList.add('loading');
+
+      try {
+        await api.auth.register({ name, email, password: pass, age });
+        showToast('✓ Account created! Now sign in.');
+        setTimeout(() => showTab('login'), 1500);
+      } catch (err) {
+        showToast('❌ ' + err.message);
+      } finally {
+        btn.classList.remove('loading');
+      }
+    }
+  </script>
+</body>
+
+</html>

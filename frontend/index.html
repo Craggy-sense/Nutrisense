@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NutriSense — Good Health & Well-being</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: rgba(247, 242, 232, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--forest);
+    }
+
+    .nav-logo span {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--forest);
+    }
+
+    .nav-cta {
+      background: var(--forest);
+      color: var(--cream) !important;
+      padding: 0.5rem 1.4rem;
+      border-radius: 100px;
+      font-weight: 500 !important;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--sage);
+      background: rgba(90, 138, 110, 0.1);
+      border: 1px solid rgba(90, 138, 110, 0.2);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--forest);
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--sage);
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .quote-box {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      text-align: left;
+    }
+
+    .quote-text {
+      font-size: 0.88rem;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .quote-author {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    .quote-tag {
+      font-size: 0.65rem;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+
+    .search-wrap {
+      width: 100%;
+      max-width: 580px;
+      margin-bottom: 1rem;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--warm-white);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      padding: 0.5rem 0.5rem 0.5rem 1.6rem;
+      box-shadow: 0 4px 24px rgba(28, 58, 43, 0.08);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-box:focus-within {
+      border-color: var(--sage);
+      box-shadow: 0 4px 24px rgba(28, 58, 43, 0.12), 0 0 0 4px rgba(90, 138, 110, 0.07);
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+    }
+
+    .search-box input::placeholder {
+      color: var(--muted);
+    }
+
+    .search-btn {
+      background: var(--forest);
+      color: var(--cream);
+      border: none;
+      padding: 0.7rem 1.6rem;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .search-btn:hover {
+      background: var(--moss);
+    }
+
+    .quick-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .tag {
+      background: rgba(90, 138, 110, 0.08);
+      border: 1px solid rgba(90, 138, 110, 0.15);
+      color: var(--sage);
+      padding: 0.3rem 0.9rem;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tag:hover {
+      background: var(--sage);
+      color: white;
+    }
+
+    #results-section {
+      display: none;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1rem 2rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    #results-section.visible {
+      display: block;
+    }
+
+    .results-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .food-card {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.4rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .food-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(28, 58, 43, 0.09);
+      border-color: var(--sage);
+    }
+
+    .food-card.selected {
+      border-color: var(--sage);
+      box-shadow: 0 0 0 3px rgba(90, 138, 110, 0.1);
+    }
+
+    .food-name {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--forest);
+      margin-bottom: 0.8rem;
+    }
+
+    .food-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    #detail-panel {
+      display: none;
+      background: var(--forest);
+      border-radius: 22px;
+      padding: 2rem;
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+    }
+
+    #detail-panel.visible {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .d-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .d-serving {
+      font-size: 0.75rem;
+      opacity: 0.5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.2rem;
+    }
+
+    .d-cal {
+      font-family: 'Fraunces', serif;
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .d-cal-lbl {
+      font-size: 0.72rem;
+      opacity: 0.5;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .macro-bars {
+      margin-top: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .macro-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .macro-nm {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      width: 70px;
+    }
+
+    .macro-bw {
+      flex: 1;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .macro-bf {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .macro-vl {
+      font-size: 0.75rem;
+      min-width: 45px;
+      text-align: right;
+    }
+
+    .nutri-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+      margin-bottom: 1rem;
+    }
+
+    .nutri-item {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 0.7rem;
+    }
+
+    .nutri-nm {
+      font-size: 0.65rem;
+      opacity: 0.5;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .nutri-vl {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 0.1rem;
+    }
+
+    .score-box {
+      background: rgba(168, 213, 181, 0.1);
+      border: 1px solid rgba(168, 213, 181, 0.2);
+      border-radius: 14px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .score-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--mint);
+      line-height: 1;
+    }
+
+    .score-lbl {
+      font-size: 0.65rem;
+      opacity: 0.5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .score-txt {
+      font-size: 0.78rem;
+      opacity: 0.6;
+      margin-top: 0.3rem;
+    }
+
+    .bmi-section {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+    }
+
+    .bmi-card {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+    }
+
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--forest);
+      margin-bottom: 0.3rem;
+    }
+
+    .section-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .bmi-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 1rem;
+      align-items: end;
+    }
+
+    .bmi-inputs label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--forest);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .bmi-inputs input {
+      width: 100%;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.7rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .bmi-inputs input:focus {
+      border-color: var(--sage);
+    }
+
+    .bmi-calc-btn {
+      background: var(--forest);
+      color: var(--cream);
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 1.4rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .bmi-calc-btn:hover {
+      background: var(--moss);
+    }
+
+    #bmi-result {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1.2rem;
+      background: var(--cream);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    #bmi-result.visible {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .bmi-num {
+      font-family: 'Fraunces', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .bmi-category {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .bmi-advice {
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.5;
+      max-width: 380px;
+    }
+
+    .features {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 2rem 5rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .feature-card {
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(28, 58, 43, 0.08);
+    }
+
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .feature-name {
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--forest);
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      color: var(--forest);
+    }
+
+    .footer-logo span {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .footer-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 700px) {
+      nav {
+        padding: 1rem 1.5rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      #detail-panel.visible {
+        grid-template-columns: 1fr;
+      }
+
+      .bmi-inputs {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 0.8rem;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-texture">
+
+  <nav>
+    <div class="nav-logo">Nutri<span>Sense</span></div>
+    <ul class="nav-links">
+      <li><a href="login.html">BMI Calculator</a></li>
+      <li><a href="login.html">Dashboard</a></li>
+      <li><a href="login.html" class="nav-cta">Get Started</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-eyebrow">✦ Good Health & Well-being</div>
+    <h1 class="hero-title anim">Know what's <em>really</em><br />in your food</h1>
+    <p class="hero-sub anim anim-d1">Search any food, get instant nutritional data, calculate your BMI, and track your
+      health — all for free.</p>
+
+    <div class="quote-box anim anim-d2">
+      <div class="quote-tag">💬 Daily Health Quote</div>
+      <div class="quote-text" id="quote-text">Loading inspirational quote...</div>
+      <div class="quote-author" id="quote-author"></div>
+    </div>
+
+    <div class="search-wrap anim anim-d3">
+      <div class="search-box">
+        <input type="text" id="fake-search" placeholder="Search any food, e.g. avocado, rice, pizza..." readonly />
+        <button class="search-btn" onclick="window.location.href='login.html'">Analyze →</button>
+      </div>
+    </div>
+
+    <div class="quick-tags anim anim-d4">
+      <span class="tag" onclick="window.location.href='login.html'">🥑 Avocado</span>
+      <span class="tag" onclick="window.location.href='login.html'">🍚 Brown Rice</span>
+      <span class="tag" onclick="window.location.href='login.html'">🍗 Chicken</span>
+      <span class="tag" onclick="window.location.href='login.html'">🍌 Banana</span>
+      <span class="tag" onclick="window.location.href='login.html'">🥬 Spinach</span>
+      <span class="tag" onclick="window.location.href='login.html'">🥚 Egg</span>
+    </div>
+  </section>
+
+  <!-- Results section removed from landing page (informational only) -->
+
+  <div class="bmi-section" id="bmi-section">
+    <div class="bmi-card">
+      <div class="section-title">BMI Calculator</div>
+      <div class="section-sub">Calculate your Body Mass Index to understand your healthy weight range</div>
+      <div class="bmi-inputs">
+        <div>
+          <label>Weight (kg)</label>
+          <input type="number" placeholder="e.g. 70" readonly />
+        </div>
+        <div>
+          <label>Height (cm)</label>
+          <input type="number" placeholder="e.g. 175" readonly />
+        </div>
+        <div>
+          <label>Age</label>
+          <input type="number" placeholder="e.g. 25" readonly />
+        </div>
+        <button class="bmi-calc-btn" onclick="window.location.href='login.html'">Calculate →</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="features">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <div
+        style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--sage);margin-bottom:0.6rem">
+        Why NutriSense</div>
+      <h2 style="font-family:'Fraunces',serif;font-size:clamp(1.8rem,4vw,2.5rem);color:var(--forest);font-weight:700">
+        Your complete health companion</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-name">Food Analyzer</div>
+        <div class="feature-desc">Search 800K+ foods and get full macro & micronutrient breakdowns instantly.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚖️</div>
+        <div class="feature-name">BMI Calculator</div>
+        <div class="feature-desc">Know if you're in a healthy weight range with personalized advice based on your BMI.
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🍽</div>
+        <div class="feature-name">Recipe of the Day</div>
+        <div class="feature-desc">Discover new healthy recipes daily with ingredients and cooking instructions.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-name">Meal Tracker</div>
+        <div class="feature-desc">Log daily meals, track calories, and monitor your progress toward your health goals.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">Nutri<span>Sense</span></div>
+    <div class="footer-note">APIs: Nutritionix · Quotable · MealDB · Built for Good Health & Well-being</div>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script>
+    // =============================================
+    // AUTH GUARD — redirect to login if not signed in
+    // =============================================
+    const sessionUser = sessionStorage.getItem('ns_user');
+    // Dashboard link requires login
+    document.querySelectorAll('a[href="dashboard.html"]').forEach(a => {
+      a.href = 'login.html';
+    });
+
+    // =============================================
+    // QUOTABLE API — Free, no key needed
+    // =============================================
+    async function loadQuote() {
+      try {
+        const res = await fetch('https://api.quotable.io/random?tags=health|happiness|inspirational');
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        document.getElementById('quote-text').textContent = '"' + data.content + '"';
+        document.getElementById('quote-author').textContent = '— ' + data.author;
+      } catch {
+        const fallbacks = [
+          { q: '"Let food be thy medicine and medicine be thy food."', a: '— Hippocrates' },
+          { q: '"Take care of your body. It\'s the only place you have to live."', a: '— Jim Rohn' },
+          { q: '"He who has health has hope, and he who has hope has everything."', a: '— Arabian Proverb' },
+        ];
+        const pick = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        document.getElementById('quote-text').textContent = pick.q;
+        document.getElementById('quote-author').textContent = pick.a;
+      }
+    }
+    loadQuote();
+
+    // Landing page is now purely informational.
+    // Search and BMI logic moved to analyzer.html (accessible after login).
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriSense — Food Analyzer</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: var(--cream);
+        }
+
+        .sidebar {
+            width: 220px;
+            background: var(--forest);
+            display: flex;
+            flex-direction: column;
+            padding: 1.8rem 1rem;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 50;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 100% 50% at 50% 0%, rgba(90, 138, 110, 0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .s-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--cream);
+            margin-bottom: 2rem;
+            padding-left: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .s-logo span {
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        .s-section {
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: rgba(168, 213, 181, 0.35);
+            margin: 1rem 0 0.4rem 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .s-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.65rem 0.7rem;
+            border-radius: 10px;
+            color: rgba(247, 242, 232, 0.55);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 0.15rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .s-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--cream);
+        }
+
+        .s-item.active {
+            background: rgba(168, 213, 181, 0.12);
+            color: var(--mint);
+        }
+
+        .s-icon {
+            width: 18px;
+            text-align: center;
+        }
+
+        .sidebar-spacer {
+            flex: 1;
+        }
+
+        .s-user {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+        }
+
+        .s-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--forest);
+            flex-shrink: 0;
+        }
+
+        .s-uname {
+            font-size: 0.8rem;
+            color: var(--cream);
+            font-weight: 500;
+        }
+
+        .s-uemail {
+            font-size: 0.65rem;
+            color: rgba(247, 242, 232, 0.35);
+        }
+
+        .main {
+            margin-left: 220px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: rgba(247, 242, 232, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .topbar h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--forest);
+        }
+
+        .content {
+            padding: 1.8rem;
+            flex: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Reuse styles from index.html for the analyzer part */
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--warm-white);
+            border: 1.5px solid var(--border);
+            border-radius: 100px;
+            padding: 0.5rem 0.5rem 0.5rem 1.6rem;
+            box-shadow: 0 4px 24px rgba(28, 58, 43, 0.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-btn {
+            background: var(--forest);
+            color: var(--cream);
+            border: none;
+            padding: 0.7rem 1.6rem;
+            border-radius: 100px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .quick-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .tag {
+            background: rgba(90, 138, 110, 0.08);
+            border: 1px solid rgba(90, 138, 110, 0.15);
+            color: var(--sage);
+            padding: 0.3rem 0.9rem;
+            border-radius: 100px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag:hover {
+            background: var(--sage);
+            color: white;
+        }
+
+        #results-section {
+            display: none;
+            margin-bottom: 3rem;
+        }
+
+        #results-section.visible {
+            display: block;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .food-card {
+            background: var(--warm-white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 1.4rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(28, 58, 43, 0.09);
+            border-color: var(--sage);
+        }
+
+        .food-card.selected {
+            border-color: var(--sage);
+            box-shadow: 0 0 0 3px rgba(90, 138, 110, 0.1);
+        }
+
+        .food-name {
+            font-family: 'Fraunces', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--forest);
+            margin-bottom: 0.8rem;
+        }
+
+        .food-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+
+        #detail-panel {
+            display: none;
+            background: var(--forest);
+            border-radius: 22px;
+            padding: 2rem;
+            color: var(--cream);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        #detail-panel.visible {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .d-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .d-serving {
+            font-size: 0.75rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1.2rem;
+        }
+
+        .d-cal {
+            font-family: 'Fraunces', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .macro-bars {
+            margin-top: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .macro-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .macro-nm {
+            font-size: 0.75rem;
+            opacity: 0.6;
+            width: 70px;
+        }
+
+        .macro-bw {
+            flex: 1;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .macro-bf {
+            height: 100%;
+            border-radius: 100px;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .macro-vl {
+            font-size: 0.75rem;
+            min-width: 45px;
+            text-align: right;
+        }
+
+        .nutri-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.7rem;
+            margin-bottom: 1rem;
+        }
+
+        .nutri-item {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 0.7rem;
+        }
+
+        .nutri-nm {
+            font-size: 0.65rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        .nutri-vl {
+            font-family: 'Fraunces', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 0.1rem;
+        }
+
+        .score-box {
+            background: rgba(168, 213, 181, 0.1);
+            border: 1px solid rgba(168, 213, 181, 0.2);
+            border-radius: 14px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .score-num {
+            font-family: 'Fraunces', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--mint);
+            line-height: 1;
+        }
+
+        .score-txt {
+            font-size: 0.78rem;
+            opacity: 0.6;
+            margin-top: 0.3rem;
+        }
+
+        .add-to-log-btn {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--gold);
+            color: var(--forest);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 100px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .add-to-log-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(212, 168, 67, 0.3);
+        }
+
+        /* BMI Section */
+        .bmi-card {
+            background: var(--warm-white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .bmi-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .bmi-inputs input {
+            width: 100%;
+            background: var(--cream);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+        }
+
+        .bmi-calc-btn {
+            background: var(--forest);
+            color: var(--cream);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.4rem;
+            cursor: pointer;
+        }
+
+        #bmi-result {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: var(--cream);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        #bmi-result.visible {
+            display: flex;
+        }
+
+        .bmi-num {
+            font-family: 'Fraunces', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .bmi-advice {
+            font-size: 0.82rem;
+            color: var(--text);
+            line-height: 1.5;
+            max-width: 380px;
+        }
+
+        @media (max-width: 1050px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            #detail-panel.visible {
+                grid-template-columns: 1fr;
+            }
+
+            .bmi-inputs {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .add-to-log-btn {
+                position: static;
+                margin-top: 1rem;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="s-logo" style="cursor: pointer;" onclick="window.location.href='index.html'">Nutri<span>Sense</span>
+        </div>
+        <div class="s-section">Main</div>
+        <div class="s-item" onclick="window.location.href='dashboard.html'"><span class="s-icon">🏠</span> Dashboard
+        </div>
+        <div class="s-item active"><span class="s-icon">🔍</span> Food Analyzer</div>
+        <div class="s-section">Tools</div>
+        <div class="s-item"><span class="s-icon">⚖️</span> BMI Calculator</div>
+        <div class="sidebar-spacer"></div>
+        <div class="s-item" onclick="logout()"><span class="s-icon">🚪</span> Sign Out</div>
+        <div class="s-user">
+            <div class="s-avatar" id="s-avatar">?</div>
+            <div>
+                <div class="s-uname" id="s-uname">Guest</div>
+                <div class="s-uemail" id="s-uemail">guest@example.com</div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <h1>Food Analyzer 🔍</h1>
+            <div id="today-date" style="font-size: 0.85rem; color: var(--muted);"></div>
+        </div>
+
+        <div class="content">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search any food (e.g. Avocado, Salmon)..."
+                    onkeydown="if(event.key==='Enter') searchFood()" />
+                <button class="search-btn" onclick="searchFood()">Analyze →</button>
+            </div>
+
+            <div class="quick-tags">
+                <span class="tag" onclick="quickSearch('avocado')">🥑 Avocado</span>
+                <span class="tag" onclick="quickSearch('brown rice')">🍚 Brown Rice</span>
+                <span class="tag" onclick="quickSearch('chicken breast')">🍗 Chicken</span>
+                <span class="tag" onclick="quickSearch('banana')">🍌 Banana</span>
+                <span class="tag" onclick="quickSearch('spinach')">🥬 Spinach</span>
+                <span class="tag" onclick="quickSearch('egg')">🥚 Egg</span>
+            </div>
+
+            <div id="results-section">
+                <p style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;"
+                    id="results-label">Results</p>
+                <div class="results-grid" id="results-grid"></div>
+
+                <div id="detail-panel">
+                    <div>
+                        <div class="d-title" id="d-name">—</div>
+                        <div class="d-serving" id="d-serving">per 100g</div>
+                        <div class="d-cal" id="d-cal">—</div>
+                        <div
+                            style="font-size: 0.72rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.1em;">
+                            Calories (kcal)</div>
+                        <div class="macro-bars" id="macro-bars"></div>
+                    </div>
+                    <div>
+                        <div class="nutri-grid" id="nutri-grid"></div>
+                        <div class="score-box">
+                            <div
+                                style="font-size: 0.65rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.08em;">
+                                NutriScore</div>
+                            <div class="score-num" id="d-score">—</div>
+                            <div class="score-txt" id="d-score-txt">—</div>
+                        </div>
+                        <button class="add-to-log-btn" id="add-to-log-trigger">+ Add to Meal Log</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bmi-card">
+                <h2 style="font-family:'Fraunces',serif; font-size:1.3rem; color:var(--forest); margin-bottom:0.3rem;">
+                    BMI Calculator</h2>
+                <p style="font-size:0.82rem; color:var(--muted); margin-bottom:1.5rem;">Calculate your Body Mass Index
+                    for healthy weight advice</p>
+                <div class="bmi-inputs">
+                    <div>
+                        <label style="font-size:0.75rem; font-weight:500; color:var(--forest);">Weight (kg)</label>
+                        <input type="number" id="bmi-weight" placeholder="e.g. 70" min="20" max="300" />
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem; font-weight:500; color:var(--forest);">Height (cm)</label>
+                        <input type="number" id="bmi-height" placeholder="e.g. 175" min="100" max="250" />
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem; font-weight:500; color:var(--forest);">Age</label>
+                        <input type="number" id="bmi-age" placeholder="e.g. 25" min="10" max="100" />
+                    </div>
+                    <button class="bmi-calc-btn" onclick="calcBMI()">Calculate →</button>
+                </div>
+                <div id="bmi-result">
+                    <div>
+                        <div class="bmi-num" id="bmi-num">—</div>
+                        <div style="font-size:0.85rem; color:var(--muted);" id="bmi-cat">BMI</div>
+                    </div>
+                    <div class="bmi-advice" id="bmi-advice"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script src="api.js"></script>
+    <script>
+        // ---- AUTH GUARD ----
+        const sessionUser = JSON.parse(sessionStorage.getItem('ns_user'));
+        const token = localStorage.getItem('ns_token');
+        if (!sessionUser || !token) window.location.href = 'login.html';
+
+        // ---- SETUP UI ----
+        document.getElementById('s-avatar').textContent = sessionUser.name[0].toUpperCase();
+        document.getElementById('s-uname').textContent = sessionUser.name;
+        document.getElementById('s-uemail').textContent = sessionUser.email;
+        document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+        let selectedFood = null;
+
+        function quickSearch(q) {
+            document.getElementById('search-input').value = q;
+            searchFood();
+        }
+
+        async function searchFood() {
+            const q = document.getElementById('search-input').value.trim();
+            if (!q) return;
+
+            // Show loading dots while we wait for the internet request
+            grid.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+            document.getElementById('results-section').classList.add('visible'); // Keep existing behavior
+            document.getElementById('detail-panel').classList.remove('visible'); // Keep existing behavior
+
+            try {
+                // We use 'fetch' to call the external API URL
+                const res = await fetch(
+                    'https://world.openfoodfacts.org/cgi/search.pl?search_terms=' +
+                    encodeURIComponent(q) +
+                    '&search_simple=1&action=process&json=1&page_size=6&fields=product_name,nutriments,serving_size,nutrition_grade_fr,brands'
+                );
+                const data = await res.json();
+                const products = (data.products || []).filter(p => p.product_name && p.nutriments);
+
+                if (!products.length) {
+                    grid.innerHTML = `<p style="color:var(--muted);font-size:0.85rem">No results found for "${q}". Try another food!</p>`;
+                    document.getElementById('results-label').textContent = 'No results for "' + q + '"'; // Keep existing behavior
+                    return;
+                }
+
+                grid.innerHTML = '';
+                document.getElementById('results-label').textContent = 'Results for "' + q + '"'; // Keep existing behavior
+                // Loop through each product found and create a "Card" for it
+                products.forEach((p, i) => {
+                    const n = p.nutriments;
+                    const cal = Math.round(n['energy-kcal_100g'] || n['energy-kcal'] || (n['energy_100g'] / 4.184) || 0);
+                    const name = p.product_name.charAt(0).toUpperCase() + p.product_name.slice(1);
+
+                    const card = document.createElement('div');
+                    card.className = 'food-card';
+                    card.innerHTML = `<div class="food-name">${name}</div><div class="food-pills"><span class="pill pill-cal">🔥 ${cal} kcal</span></div>`;
+                    card.onclick = () => showDetail(p, card);
+                    grid.appendChild(card);
+                });
+
+                showDetail(products[0], grid.querySelector('.food-card'));
+
+            } catch (err) {
+                grid.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">Database error. Check your connection.</p>';
+            }
+        }
+
+        function showDetail(p, cardEl) {
+            document.querySelectorAll('.food-card').forEach(c => c.classList.remove('selected'));
+            if (cardEl) cardEl.classList.add('selected');
+
+            const n = p.nutriments;
+            const cal = Math.round(n['energy-kcal_100g'] || n['energy-kcal'] || (n['energy_100g'] / 4.184) || 0);
+            const pro = Math.round((n['proteins_100g'] || 0) * 10) / 10;
+            const carb = Math.round((n['carbohydrates_100g'] || 0) * 10) / 10;
+            const fat = Math.round((n['fat_100g'] || 0) * 10) / 10;
+            const fiber = Math.round((n['fiber_100g'] || 0) * 10) / 10;
+            const sugar = Math.round((n['sugars_100g'] || 0) * 10) / 10;
+            const sodium = Math.round((n['sodium_100g'] || 0) * 1000);
+            const salt = Math.round((n['salt_100g'] || 0) * 10) / 10;
+
+            const score = Math.min(99, Math.max(40, Math.round(70 + (pro * 2) - (sugar * 0.5) - (fat * 0.3) + (fiber * 3))));
+            const tag = score >= 85 ? 'Excellent 🌿' : score >= 70 ? 'Good ✅' : score >= 55 ? 'Moderate ⚠️' : 'Low 🔴';
+
+            selectedFood = { name: p.product_name, cal, pro, score };
+
+            document.getElementById('detail-panel').classList.add('visible');
+            document.getElementById('d-name').textContent = p.product_name;
+            document.getElementById('d-serving').textContent = 'per 100g' + (p.serving_size ? ' · ' + p.serving_size : '');
+            document.getElementById('d-cal').textContent = cal;
+            document.getElementById('d-score').textContent = score;
+            document.getElementById('d-score-txt').textContent = tag;
+
+            const bars = [
+                { name: 'Protein', val: pro, color: '#A8D5B5' },
+                { name: 'Carbs', val: carb, color: '#D4A843' },
+                { name: 'Fat', val: fat, color: '#F0C4A0' },
+                { name: 'Fiber', val: fiber, color: '#5A8A6E' }
+            ];
+            const barsEl = document.getElementById('macro-bars');
+            barsEl.innerHTML = bars.map(m => {
+                const pct = Math.min(m.val * 2, 100);
+                return `<div class="macro-row"><div class="macro-nm">${m.name}</div><div class="macro-bw"><div class="macro-bf" style="width:${pct}%; background:${m.color}"></div></div><div class="macro-vl">${m.val}g</div></div>`;
+            }).join('');
+
+            document.getElementById('nutri-grid').innerHTML = `
+        <div class="nutri-item"><div class="nutri-nm">Sodium</div><div class="nutri-vl">${sodium}mg</div></div>
+        <div class="nutri-item"><div class="nutri-nm">Salt</div><div class="nutri-vl">${salt}g</div></div>
+      `;
+        }
+
+        // ADD TO LOG: This sends the selected food's nutrients to our local database.
+        document.getElementById('add-to-log-trigger').onclick = async () => {
+            if (!selectedFood) return;
+            const hr = new Date().getHours();
+            // Automatically guess which meal category it belongs to based on the time of day
+            const type = hr < 11 ? 'Breakfast' : hr < 15 ? 'Lunch' : hr < 18 ? 'Snack' : 'Dinner';
+
+            try {
+                // Send the data to our Laravel Backend via the api.js utility
+                await api.meals.add({
+                    ...selectedFood,
+                    type,
+                    time: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+                });
+                showToast(`✓ ${selectedFood.name} added to dashboard!`);
+            } catch (err) {
+                showToast('❌ Error adding to log');
+            }
+        };
+
+        function calcBMI() {
+            const w = parseFloat(document.getElementById('bmi-weight').value);
+            const h = parseFloat(document.getElementById('bmi-height').value) / 100;
+            if (!w || !h) return;
+            const bmi = (w / (h * h)).toFixed(1);
+            const res = document.getElementById('bmi-result');
+            res.classList.add('visible');
+            document.getElementById('bmi-num').textContent = bmi;
+
+            let cat = '', advice = '';
+            if (bmi < 18.5) { cat = 'Underweight'; advice = 'Try focusing on nutrient-dense foods and healthy snacks to reach a balanced weight range.'; }
+            else if (bmi < 25) { cat = 'Normal weight'; advice = 'Great job! You are in a healthy weight range. Keep maintaining your balanced diet and active lifestyle.'; }
+            else if (bmi < 30) { cat = 'Overweight'; advice = 'Focus on portion control and increasing physical activity to help bring your BMI into a healthier range.'; }
+            else { cat = 'Obesity'; advice = 'We recommend consulting a healthcare professional to create a personalized nutrition and activity plan.'; }
+
+            document.getElementById('bmi-cat').textContent = cat;
+            document.getElementById('bmi-advice').textContent = advice;
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function logout() {
+            localStorage.removeItem('ns_token');
+            sessionStorage.removeItem('ns_user');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>
