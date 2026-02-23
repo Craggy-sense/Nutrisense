@@ -2,8 +2,6 @@
 
 NutriSense is a modern, full-stack health and nutrition tracking application. It helps users manage their daily intake, analyze food metrics, and provides personalized advice through an integrated AI Advisor.
 
-![NutriSense Dashboard](https://raw.githubusercontent.com/Craggy-sense/Nutrisense/main/frontend/assets/preview.png) *(Note: Add a real preview image link if available)*
-
 ## 🚀 Features
 
 - **Personalized Dashboard**: Track your daily calorie and protein goals with dynamic progress bars.
